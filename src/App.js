@@ -1,25 +1,45 @@
-import logo from './logo.svg';
+import {Component} from 'react';
+import {CardList} from './component/card-list/card-list.component.jsx';
+import {Search} from './component/search/search.component.jsx'
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(){
+    super();
+    this.state = {
+      monster : [],
+      searchFilter : ''
+    }
+  }
+  componentDidMount(){
+    fetch("https://jsonplaceholder.typicode.com/users")
+    .then(Response=> 
+        Response.json()
+      )
+      .then(digvijay=> 
+        this.setState({
+          monster : digvijay,
+          
+        })
+      )
+  }
+  render(){
+    const {monster,searchFilter} = this.state;
+    const monsterFilter = monster.filter(monster=>
+      monster.name.toLowerCase().includes(searchFilter.toLowerCase())
+    );
+    console.log(monsterFilter)
+    return (
+      <div className="App">
+       <h1>Monster Rolodex</h1>
+        <Search  placeholder="search monster"
+         handelChange={(e)=>this.setState({searchFilter:e.target.value})
+         }/>
+       <CardList monster={monsterFilter}/>
+      </div>
+    );
+  }
+  
 }
 
 export default App;
